@@ -1,19 +1,21 @@
 function createLoginTracker(celestine) {
     let attempts = 0;
-    return () => {
+    return  function () {
         attempts++;
 
         if (attempts <= 3){
-            console.log(`${celestine} attempt ${attempts}: Try again `);
+         return`${celestine} attempt ${attempts}: Try again `;
         } else {
-            console.log(`${celestine} account locked `);  
+             return `${celestine} account locked `;  
         }
 
     };
 }
 
-const user= createLoginTracker('celestine');
-user(); // celestine attempt 1: Try again
-user(); // celestine attempt 2: Try again
-user(); // celestine  attempt 3: Try again
-user(); // celestine account locked
+const user= createLoginTracker('celestine')
+
+console.log(user());
+console.log(user());
+console.log(user());
+console.log(user());
+
