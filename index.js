@@ -1,30 +1,33 @@
 function createLoginTracker(userInfo) {
-  let loginAttempts = 0;
-  const maxAttempts = 3;
+  let attempts = 0;
+  let locked = false;
 
-  return (enteredPassword) => {
-    // 1. Check if already locked
-    if (loginAttempts >= maxAttempts) {
-      return "Account is locked. Please contact support.";
+  return (password) => {
+    if (locked) {
+      return "Account locked";
     }
 
-    // 2. Check password
-    if (enteredPassword === userInfo.password) {
-      loginAttempts = 0;
-      return `Welcome, ${userInfo.username}! Login successful.`;
+    if (password === userInfo.password) {
+      attempts = 0; // reset on success
+      return "Login successful";
     } else {
-      loginAttempts++;
-      
-      // 3. Check if this attempt causes a lock
-      if (loginAttempts >= maxAttempts) {
-        return "Too many failed attempts. Account is now locked.";
+      attempts++;
+
+      if (attempts >= 3) {
+        locked = true;
+        return "Account locked";
       }
-      
-      // 4. Return remaining attempts (Match this exactly)
-      return `Incorrect password. Attempts remaining: ${maxAttempts - loginAttempts}`;
+
+      return "Incorrect password";
     }
   };
 }
 
-// Crucial: Export the function for Jest
-module.exports = createLoginTracker;
+const user = { username: "admin", password: "1234" };
+
+const login = createLoginTracker(user);
+
+console.log(login("1111")); // Incorrect password
+console.log(login("2222")); // Incorrect password
+console.log(login("3333")); // Account locked
+console.log(login("1234")); // Account locked
