@@ -1,33 +1,21 @@
 function createLoginTracker(userInfo) {
-  let attempts = 0;
-  let locked = false;
+  let attemptCount = 0;
 
-  return (password) => {
-    if (locked) {
-      return "Account locked";
+  return (passwordAttempt) => {
+    attemptCount++;
+
+    // If attempts exceed 3 → lock account
+    if (attemptCount > 3) {
+      return "Account locked due to many failed login attempts";
     }
 
-    if (password === userInfo.password) {
-      attempts = 0; // reset on success
+    // If password is correct
+    if (passwordAttempt === userInfo.password) {
       return "Login successful";
-    } else {
-      attempts++;
-
-      if (attempts >= 3) {
-        locked = true;
-        return "Account locked";
-      }
-
-      return "Incorrect password";
+    } 
+    // If password is incorrect
+    else {
+      return `Attempt ${attemptCount}: Login failed`;
     }
   };
 }
-
-const user = { username: "admin", password: "1234" };
-
-const login = createLoginTracker(user);
-
-console.log(login("1111")); // Incorrect password
-console.log(login("2222")); // Incorrect password
-console.log(login("3333")); // Account locked
-console.log(login("1234")); // Account locked
